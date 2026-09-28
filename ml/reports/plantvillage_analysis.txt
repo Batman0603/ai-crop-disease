@@ -1,0 +1,50 @@
+PlantVillage analysis
+Total images: 54,305
+Classes: 38
+Crops: 14
+Healthy/diseased: {'healthy': 15084, 'diseased': 39221}
+Leaf IDs: True (20,015 unique)
+Multi-image leaf groups: 8,181
+
+Images per class:
+  Apple___Apple_scab: 630
+  Apple___Black_rot: 621
+  Apple___Cedar_apple_rust: 275
+  Apple___healthy: 1,645
+  Blueberry___healthy: 1,502
+  Cherry_(including_sour)___Powdery_mildew: 1,052
+  Cherry_(including_sour)___healthy: 854
+  Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot: 513
+  Corn_(maize)___Common_rust_: 1,192
+  Corn_(maize)___Northern_Leaf_Blight: 985
+  Corn_(maize)___healthy: 1,162
+  Grape___Black_rot: 1,180
+  Grape___Esca_(Black_Measles): 1,383
+  Grape___Leaf_blight_(Isariopsis_Leaf_Spot): 1,076
+  Grape___healthy: 423
+  Orange___Haunglongbing_(Citrus_greening): 5,507
+  Peach___Bacterial_spot: 2,297
+  Peach___healthy: 360
+  Pepper,_bell___Bacterial_spot: 997
+  Pepper,_bell___healthy: 1,478
+  Potato___Early_blight: 1,000
+  Potato___Late_blight: 1,000
+  Potato___healthy: 152
+  Raspberry___healthy: 371
+  Soybean___healthy: 5,090
+  Squash___Powdery_mildew: 1,835
+  Strawberry___Leaf_scorch: 1,109
+  Strawberry___healthy: 456
+  Tomato___Bacterial_spot: 2,127
+  Tomato___Early_blight: 1,000
+  Tomato___Late_blight: 1,909
+  Tomato___Leaf_Mold: 952
+  Tomato___Septoria_leaf_spot: 1,771
+  Tomato___Spider_mites Two-spotted_spider_mite: 1,676
+  Tomato___Target_Spot: 1,404
+  Tomato___Tomato_Yellow_Leaf_Curl_Virus: 5,357
+  Tomato___Tomato_mosaic_virus: 373
+  Tomato___healthy: 1,591
+
+Recommendation: review candidate classes before approving a split.
+PlantDoc remains a separate real-world evaluation dataset.

@@ -1,0 +1,19 @@
+{
+  "manifest_path": "C:\\Users\\Kumaraguru\\ai-crop-disease\\ml\\dataset\\processed\\manifest.csv",
+  "approved_classes_path": "C:\\Users\\Kumaraguru\\ai-crop-disease\\ml\\reports\\approved_classes.json",
+  "image_root": null,
+  "output_dir": "C:\\Users\\Kumaraguru\\ai-crop-disease\\ml\\models",
+  "report_dir": "C:\\Users\\Kumaraguru\\ai-crop-disease\\ml\\reports\\training",
+  "image_size": 224,
+  "batch_size": 16,
+  "num_workers": 0,
+  "learning_rate": 0.0001,
+  "weight_decay": 0.0001,
+  "max_epochs": 20,
+  "patience": 5,
+  "seed": 42,
+  "use_class_weights": true,
+  "use_random_affine": false,
+  "sanity_train_batches": 3,
+  "sanity_validation_batches": 2
+}

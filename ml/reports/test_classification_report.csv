@@ -1,0 +1,26 @@
+class,precision,recall,f1,support
+Apple___Apple_scab,1.0,1.0,1.0,93
+Apple___Black_rot,1.0,1.0,1.0,92
+Apple___Cedar_apple_rust,1.0,1.0,1.0,40
+Apple___healthy,1.0,1.0,1.0,247
+Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot,0.935064935064935,0.935064935064935,0.935064935064935,77
+Corn_(maize)___Common_rust_,1.0,1.0,1.0,178
+Corn_(maize)___Northern_Leaf_Blight,0.9659863945578231,0.9659863945578231,0.9659863945578231,147
+Corn_(maize)___healthy,1.0,1.0,1.0,174
+Grape___Black_rot,1.0,1.0,1.0,176
+Grape___Esca_(Black_Measles),1.0,1.0,1.0,207
+Grape___Leaf_blight_(Isariopsis_Leaf_Spot),1.0,1.0,1.0,160
+Grape___healthy,1.0,1.0,1.0,63
+Potato___Early_blight,1.0,1.0,1.0,148
+Potato___Late_blight,1.0,1.0,1.0,148
+Potato___healthy,1.0,1.0,1.0,20
+Tomato___Bacterial_spot,1.0,0.9936708860759493,0.9968253968253968,316
+Tomato___Early_blight,0.9726027397260274,0.9594594594594594,0.9659863945578231,148
+Tomato___Late_blight,0.9759450171821306,0.993006993006993,0.9844020797227037,286
+Tomato___Leaf_Mold,0.9929078014184397,1.0,0.99644128113879,140
+Tomato___Septoria_leaf_spot,0.9961832061068703,0.9849056603773585,0.9905123339658444,265
+Tomato___Spider_mites Two-spotted_spider_mite,1.0,0.9717741935483871,0.9856850715746421,248
+Tomato___Target_Spot,0.9675925925925926,0.9952380952380953,0.9812206572769953,210
+Tomato___Tomato_Yellow_Leaf_Curl_Virus,0.9975155279503105,1.0,0.9987562189054726,803
+Tomato___Tomato_mosaic_virus,1.0,1.0,1.0,56
+Tomato___healthy,1.0,1.0,1.0,238

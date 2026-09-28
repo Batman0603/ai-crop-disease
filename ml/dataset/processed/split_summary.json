@@ -1,0 +1,182 @@
+{
+  "approved_classes": [
+    "Apple___Apple_scab",
+    "Apple___Black_rot",
+    "Apple___Cedar_apple_rust",
+    "Apple___healthy",
+    "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot",
+    "Corn_(maize)___Common_rust_",
+    "Corn_(maize)___Northern_Leaf_Blight",
+    "Corn_(maize)___healthy",
+    "Grape___Black_rot",
+    "Grape___Esca_(Black_Measles)",
+    "Grape___Leaf_blight_(Isariopsis_Leaf_Spot)",
+    "Grape___healthy",
+    "Potato___Early_blight",
+    "Potato___Late_blight",
+    "Potato___healthy",
+    "Tomato___Bacterial_spot",
+    "Tomato___Early_blight",
+    "Tomato___Late_blight",
+    "Tomato___Leaf_Mold",
+    "Tomato___Septoria_leaf_spot",
+    "Tomato___Spider_mites Two-spotted_spider_mite",
+    "Tomato___Target_Spot",
+    "Tomato___Tomato_Yellow_Leaf_Curl_Virus",
+    "Tomato___Tomato_mosaic_virus",
+    "Tomato___healthy"
+  ],
+  "seed": 42,
+  "ratios": {
+    "train": 0.7,
+    "validation": 0.15,
+    "test": 0.15
+  },
+  "total_selected_images": 31397,
+  "images_per_split": {
+    "train": 22022,
+    "validation": 4695,
+    "test": 4680
+  },
+  "unique_groups_per_split": {
+    "train": 10557,
+    "validation": 2261,
+    "test": 2256
+  },
+  "per_class_counts": {
+    "Apple___Apple_scab": {
+      "train": 443,
+      "validation": 94,
+      "test": 93
+    },
+    "Apple___Black_rot": {
+      "train": 437,
+      "validation": 92,
+      "test": 92
+    },
+    "Apple___Cedar_apple_rust": {
+      "train": 195,
+      "validation": 40,
+      "test": 40
+    },
+    "Apple___healthy": {
+      "train": 1152,
+      "validation": 246,
+      "test": 247
+    },
+    "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot": {
+      "train": 359,
+      "validation": 77,
+      "test": 77
+    },
+    "Corn_(maize)___Common_rust_": {
+      "train": 835,
+      "validation": 179,
+      "test": 178
+    },
+    "Corn_(maize)___Northern_Leaf_Blight": {
+      "train": 690,
+      "validation": 148,
+      "test": 147
+    },
+    "Corn_(maize)___healthy": {
+      "train": 814,
+      "validation": 174,
+      "test": 174
+    },
+    "Grape___Black_rot": {
+      "train": 828,
+      "validation": 176,
+      "test": 176
+    },
+    "Grape___Esca_(Black_Measles)": {
+      "train": 968,
+      "validation": 208,
+      "test": 207
+    },
+    "Grape___Leaf_blight_(Isariopsis_Leaf_Spot)": {
+      "train": 756,
+      "validation": 160,
+      "test": 160
+    },
+    "Grape___healthy": {
+      "train": 297,
+      "validation": 63,
+      "test": 63
+    },
+    "Potato___Early_blight": {
+      "train": 704,
+      "validation": 148,
+      "test": 148
+    },
+    "Potato___Late_blight": {
+      "train": 704,
+      "validation": 148,
+      "test": 148
+    },
+    "Potato___healthy": {
+      "train": 108,
+      "validation": 24,
+      "test": 20
+    },
+    "Tomato___Bacterial_spot": {
+      "train": 1492,
+      "validation": 319,
+      "test": 316
+    },
+    "Tomato___Early_blight": {
+      "train": 703,
+      "validation": 149,
+      "test": 148
+    },
+    "Tomato___Late_blight": {
+      "train": 1337,
+      "validation": 286,
+      "test": 286
+    },
+    "Tomato___Leaf_Mold": {
+      "train": 672,
+      "validation": 140,
+      "test": 140
+    },
+    "Tomato___Septoria_leaf_spot": {
+      "train": 1241,
+      "validation": 265,
+      "test": 265
+    },
+    "Tomato___Spider_mites Two-spotted_spider_mite": {
+      "train": 1176,
+      "validation": 252,
+      "test": 248
+    },
+    "Tomato___Target_Spot": {
+      "train": 984,
+      "validation": 210,
+      "test": 210
+    },
+    "Tomato___Tomato_Yellow_Leaf_Curl_Virus": {
+      "train": 3751,
+      "validation": 803,
+      "test": 803
+    },
+    "Tomato___Tomato_mosaic_virus": {
+      "train": 261,
+      "validation": 56,
+      "test": 56
+    },
+    "Tomato___healthy": {
+      "train": 1115,
+      "validation": 238,
+      "test": 238
+    }
+  },
+  "group_overlap": {
+    "train_and_validation": [],
+    "train_and_test": [],
+    "validation_and_test": []
+  },
+  "zero_group_overlap": true,
+  "special_handling": [
+    "Potato___healthy has 152 images; monitor validation/test sample counts and use stratified metrics during training."
+  ]
+}

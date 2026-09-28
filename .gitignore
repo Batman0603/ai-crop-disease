@@ -1,0 +1,103 @@
+# ==============================
+# Python
+# ==============================
+
+__pycache__/
+*.py[cod]
+*$py.class
+
+# ==============================
+# Virtual environments
+# ==============================
+
+.venv/
+venv/
+env/
+ENV/
+
+# ML virtual environment
+ml/.venv/
+
+# ==============================
+# Jupyter
+# ==============================
+
+.ipynb_checkpoints/
+
+# ==============================
+# Python tooling
+# ==============================
+
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ==============================
+# Dataset
+# ==============================
+
+# Original/raw datasets are too large for Git
+ml/dataset/raw/
+
+# Processed image copies, if created later
+ml/dataset/processed/images/
+
+# PlantDoc raw dataset
+ml/dataset/plantdoc/
+
+# Hugging Face/local dataset caches
+.cache/
+.cache/
+huggingface/
+
+# ==============================
+# ML models
+# ==============================
+
+# Trained model files can be very large
+ml/models/*.pth
+ml/models/*.pt
+ml/models/*.ckpt
+ml/models/*.onnx
+ml/models/*.onnx.data
+
+# Training checkpoints
+ml/checkpoints/
+
+# ==============================
+# ML generated outputs
+# ==============================
+
+ml/runs/
+ml/wandb/
+ml/tensorboard/
+ml/logs/
+
+# ==============================
+# Environment / secrets
+# ==============================
+
+.env
+.env.*
+!.env.example
+
+# ==============================
+# OS files
+# ==============================
+
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ==============================
+# IDE
+# ==============================
+
+.vscode/
+.idea/
+
+# ==============================
+# Logs
+# ==============================
+
+*.log
