@@ -61,6 +61,7 @@ ml/models/*.ckpt
 ml/models/*.onnx
 ml/models/*.onnx.data
 
+!ml/models/crop_disease_efficientnet_v2_s.onnx
 # Training checkpoints
 ml/checkpoints/
 
