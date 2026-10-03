@@ -4,7 +4,9 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../screens/disease_result_screen.dart';
 import '../services/crop_disease_inference_service.dart';
+import '../services/disease_information_service.dart';
 import '../services/image_preprocessing_service.dart';
 
 class DetectScreen extends StatefulWidget {
@@ -16,10 +18,12 @@ class DetectScreen extends StatefulWidget {
 
 class _DetectScreenState extends State<DetectScreen> {
   final ImagePicker _picker = ImagePicker();
+
   final CropDiseaseInferenceService _inferenceService =
       CropDiseaseInferenceService();
 
   XFile? _selectedImage;
+
   bool _isPickingImage = false;
   bool _isAnalyzing = false;
 
@@ -31,7 +35,10 @@ class _DetectScreenState extends State<DetectScreen> {
     });
 
     try {
-      final XFile? image = await _picker.pickImage(source: source);
+      final XFile? image = await _picker.pickImage(
+        source: source,
+        imageQuality: 100,
+      );
 
       if (!mounted) return;
 
@@ -69,40 +76,73 @@ class _DetectScreenState extends State<DetectScreen> {
       debugPrint('STARTING CROP DISEASE INFERENCE');
       debugPrint('IMAGE: ${selectedImage.path}');
 
+      // ------------------------------------------------------------
       // 1. Load the ONNX model.
+      // ------------------------------------------------------------
       await _inferenceService.load();
 
-      debugPrint('MODEL LOADED: ${_inferenceService.isLoaded ? "YES" : "NO"}');
+      debugPrint(
+        'MODEL LOADED: '
+        '${_inferenceService.isLoaded ? "YES" : "NO"}',
+      );
 
+      // ------------------------------------------------------------
       // 2. Preprocess the selected image.
+      // ------------------------------------------------------------
       final Float32List input = await ImagePreprocessingService.preprocessFile(
         File(selectedImage.path),
       );
 
       debugPrint('INPUT: ${input.length}');
 
+      // ------------------------------------------------------------
       // 3. Run ONNX inference.
+      // ------------------------------------------------------------
       final prediction = await _inferenceService.predict(input);
 
       debugPrint('OUTPUT: ${prediction.probabilities.length}');
+
       debugPrint('CLASS INDEX: ${prediction.classIndex}');
-      debugPrint('CONFIDENCE: ${prediction.confidence.toStringAsFixed(6)}');
+
+      debugPrint(
+        'CONFIDENCE: '
+        '${prediction.confidence.toStringAsFixed(6)}',
+      );
 
       final probabilitySum = prediction.probabilities.fold<double>(
         0.0,
         (sum, probability) => sum + probability,
       );
 
-      debugPrint('PROBABILITY SUM: ${probabilitySum.toStringAsFixed(6)}');
+      debugPrint(
+        'PROBABILITY SUM: '
+        '${probabilitySum.toStringAsFixed(6)}',
+      );
+
       debugPrint('========================================');
 
+      // ------------------------------------------------------------
+      // 4. Convert model class index into disease information.
+      // ------------------------------------------------------------
+      final disease = DiseaseInformationService.getByClassIndex(
+        prediction.classIndex,
+      );
+
+      debugPrint('DISEASE: ${disease.diseaseName}');
+
+      debugPrint('CROP: ${disease.crop}');
+
+      // ------------------------------------------------------------
+      // 5. Navigate to the Phase 5 result screen.
+      // ------------------------------------------------------------
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Inference successful — class ${prediction.classIndex}, '
-            '${(prediction.confidence * 100).toStringAsFixed(1)}%',
+      await Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => DiseaseResultScreen(
+            imageFile: File(selectedImage.path),
+            prediction: prediction,
+            disease: disease,
           ),
         ),
       );
@@ -131,6 +171,8 @@ class _DetectScreenState extends State<DetectScreen> {
   }
 
   void _clearImage() {
+    if (_isAnalyzing) return;
+
     setState(() {
       _selectedImage = null;
     });
@@ -160,7 +202,9 @@ class _DetectScreenState extends State<DetectScreen> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
+
               const SizedBox(height: 8),
+
               Text(
                 'Take a clear photo of the affected plant leaf '
                 'or choose an image from your gallery.',
@@ -168,9 +212,12 @@ class _DetectScreenState extends State<DetectScreen> {
                   color: theme.colorScheme.onSurfaceVariant,
                 ),
               ),
+
               const SizedBox(height: 24),
 
+              // ------------------------------------------------------
               // Image preview area
+              // ------------------------------------------------------
               Container(
                 height: 300,
                 width: double.infinity,
@@ -189,12 +236,16 @@ class _DetectScreenState extends State<DetectScreen> {
                             size: 64,
                             color: theme.colorScheme.primary,
                           ),
+
                           const SizedBox(height: 16),
+
                           Text(
                             'No image selected',
                             style: theme.textTheme.titleMedium,
                           ),
+
                           const SizedBox(height: 8),
+
                           Text(
                             'Your plant photo will appear here',
                             style: theme.textTheme.bodySmall,
@@ -215,7 +266,9 @@ class _DetectScreenState extends State<DetectScreen> {
 
               const SizedBox(height: 20),
 
+              // ------------------------------------------------------
               // Camera button
+              // ------------------------------------------------------
               FilledButton.icon(
                 onPressed: (_isPickingImage || _isAnalyzing)
                     ? null
@@ -226,7 +279,9 @@ class _DetectScreenState extends State<DetectScreen> {
 
               const SizedBox(height: 12),
 
+              // ------------------------------------------------------
               // Gallery button
+              // ------------------------------------------------------
               OutlinedButton.icon(
                 onPressed: (_isPickingImage || _isAnalyzing)
                     ? null
@@ -235,13 +290,21 @@ class _DetectScreenState extends State<DetectScreen> {
                 label: const Text('Choose from Gallery'),
               ),
 
+              // ------------------------------------------------------
+              // Loading indicator
+              // ------------------------------------------------------
               if (_isPickingImage || _isAnalyzing) ...[
                 const SizedBox(height: 20),
+
                 const Center(child: CircularProgressIndicator()),
               ],
 
+              // ------------------------------------------------------
+              // Selected image actions
+              // ------------------------------------------------------
               if (_selectedImage != null) ...[
                 const SizedBox(height: 12),
+
                 TextButton.icon(
                   onPressed: (_isPickingImage || _isAnalyzing)
                       ? null
@@ -249,15 +312,28 @@ class _DetectScreenState extends State<DetectScreen> {
                   icon: const Icon(Icons.delete_outline),
                   label: const Text('Remove Image'),
                 ),
+
                 const SizedBox(height: 12),
+
+                // ----------------------------------------------------
+                // Analyze button
+                // ----------------------------------------------------
                 FilledButton.icon(
                   onPressed: (_isPickingImage || _isAnalyzing)
                       ? null
                       : _analyzeImage,
-                  icon: const Icon(Icons.search),
+                  icon: _isAnalyzing
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Icon(Icons.search),
                   label: Text(_isAnalyzing ? 'Analyzing...' : 'Analyze Plant'),
                 ),
+
                 const SizedBox(height: 8),
+
                 Text(
                   _isAnalyzing
                       ? 'Running the crop disease model...'
