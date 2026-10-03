@@ -75,8 +75,7 @@ class _DetectScreenState extends State<DetectScreen> {
       debugPrint('MODEL LOADED: ${_inferenceService.isLoaded ? "YES" : "NO"}');
 
       // 2. Preprocess the selected image.
-      final Float32List input =
-          await ImagePreprocessingService.preprocessFile(
+      final Float32List input = await ImagePreprocessingService.preprocessFile(
         File(selectedImage.path),
       );
 
@@ -87,18 +86,14 @@ class _DetectScreenState extends State<DetectScreen> {
 
       debugPrint('OUTPUT: ${prediction.probabilities.length}');
       debugPrint('CLASS INDEX: ${prediction.classIndex}');
-      debugPrint(
-        'CONFIDENCE: ${prediction.confidence.toStringAsFixed(6)}',
-      );
+      debugPrint('CONFIDENCE: ${prediction.confidence.toStringAsFixed(6)}');
 
       final probabilitySum = prediction.probabilities.fold<double>(
         0.0,
         (sum, probability) => sum + probability,
       );
 
-      debugPrint(
-        'PROBABILITY SUM: ${probabilitySum.toStringAsFixed(6)}',
-      );
+      debugPrint('PROBABILITY SUM: ${probabilitySum.toStringAsFixed(6)}');
       debugPrint('========================================');
 
       if (!mounted) return;
@@ -260,9 +255,7 @@ class _DetectScreenState extends State<DetectScreen> {
                       ? null
                       : _analyzeImage,
                   icon: const Icon(Icons.search),
-                  label: Text(
-                    _isAnalyzing ? 'Analyzing...' : 'Analyze Plant',
-                  ),
+                  label: Text(_isAnalyzing ? 'Analyzing...' : 'Analyze Plant'),
                 ),
                 const SizedBox(height: 8),
                 Text(
