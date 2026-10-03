@@ -36,6 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   image_picker: ^1.2.3
   image: ^4.10.1
+  flutter_onnxruntime: ^1.8.5
 
 dev_dependencies:
   flutter_test:
@@ -89,3 +90,5 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+  assets:
+    - assets/models/crop_disease_efficientnet_v2_s.onnx

@@ -1,7 +1,11 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+
+import '../services/crop_disease_inference_service.dart';
+import '../services/image_preprocessing_service.dart';
 
 class DetectScreen extends StatefulWidget {
   const DetectScreen({super.key});
@@ -12,12 +16,15 @@ class DetectScreen extends StatefulWidget {
 
 class _DetectScreenState extends State<DetectScreen> {
   final ImagePicker _picker = ImagePicker();
+  final CropDiseaseInferenceService _inferenceService =
+      CropDiseaseInferenceService();
 
   XFile? _selectedImage;
   bool _isPickingImage = false;
+  bool _isAnalyzing = false;
 
   Future<void> _pickImage(ImageSource source) async {
-    if (_isPickingImage) return;
+    if (_isPickingImage || _isAnalyzing) return;
 
     setState(() {
       _isPickingImage = true;
@@ -48,10 +55,96 @@ class _DetectScreenState extends State<DetectScreen> {
     }
   }
 
+  Future<void> _analyzeImage() async {
+    final selectedImage = _selectedImage;
+
+    if (selectedImage == null || _isAnalyzing) return;
+
+    setState(() {
+      _isAnalyzing = true;
+    });
+
+    try {
+      debugPrint('========================================');
+      debugPrint('STARTING CROP DISEASE INFERENCE');
+      debugPrint('IMAGE: ${selectedImage.path}');
+
+      // 1. Load the ONNX model.
+      await _inferenceService.load();
+
+      debugPrint('MODEL LOADED: ${_inferenceService.isLoaded ? "YES" : "NO"}');
+
+      // 2. Preprocess the selected image.
+      final Float32List input =
+          await ImagePreprocessingService.preprocessFile(
+        File(selectedImage.path),
+      );
+
+      debugPrint('INPUT: ${input.length}');
+
+      // 3. Run ONNX inference.
+      final prediction = await _inferenceService.predict(input);
+
+      debugPrint('OUTPUT: ${prediction.probabilities.length}');
+      debugPrint('CLASS INDEX: ${prediction.classIndex}');
+      debugPrint(
+        'CONFIDENCE: ${prediction.confidence.toStringAsFixed(6)}',
+      );
+
+      final probabilitySum = prediction.probabilities.fold<double>(
+        0.0,
+        (sum, probability) => sum + probability,
+      );
+
+      debugPrint(
+        'PROBABILITY SUM: ${probabilitySum.toStringAsFixed(6)}',
+      );
+      debugPrint('========================================');
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Inference successful — class ${prediction.classIndex}, '
+            '${(prediction.confidence * 100).toStringAsFixed(1)}%',
+          ),
+        ),
+      );
+    } catch (error, stackTrace) {
+      debugPrint('========================================');
+      debugPrint('INFERENCE FAILED');
+      debugPrint('ERROR: $error');
+      debugPrint('STACK TRACE: $stackTrace');
+      debugPrint('========================================');
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Disease analysis failed: $error'),
+          duration: const Duration(seconds: 5),
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isAnalyzing = false;
+        });
+      }
+    }
+  }
+
   void _clearImage() {
     setState(() {
       _selectedImage = null;
     });
+  }
+
+  @override
+  void dispose() {
+    _inferenceService.close();
+    super.dispose();
   }
 
   @override
@@ -129,7 +222,7 @@ class _DetectScreenState extends State<DetectScreen> {
 
               // Camera button
               FilledButton.icon(
-                onPressed: _isPickingImage
+                onPressed: (_isPickingImage || _isAnalyzing)
                     ? null
                     : () => _pickImage(ImageSource.camera),
                 icon: const Icon(Icons.camera_alt_outlined),
@@ -140,14 +233,14 @@ class _DetectScreenState extends State<DetectScreen> {
 
               // Gallery button
               OutlinedButton.icon(
-                onPressed: _isPickingImage
+                onPressed: (_isPickingImage || _isAnalyzing)
                     ? null
                     : () => _pickImage(ImageSource.gallery),
                 icon: const Icon(Icons.photo_library_outlined),
                 label: const Text('Choose from Gallery'),
               ),
 
-              if (_isPickingImage) ...[
+              if (_isPickingImage || _isAnalyzing) ...[
                 const SizedBox(height: 20),
                 const Center(child: CircularProgressIndicator()),
               ],
@@ -155,19 +248,27 @@ class _DetectScreenState extends State<DetectScreen> {
               if (_selectedImage != null) ...[
                 const SizedBox(height: 12),
                 TextButton.icon(
-                  onPressed: _isPickingImage ? null : _clearImage,
+                  onPressed: (_isPickingImage || _isAnalyzing)
+                      ? null
+                      : _clearImage,
                   icon: const Icon(Icons.delete_outline),
                   label: const Text('Remove Image'),
                 ),
                 const SizedBox(height: 12),
                 FilledButton.icon(
-                  onPressed: null,
+                  onPressed: (_isPickingImage || _isAnalyzing)
+                      ? null
+                      : _analyzeImage,
                   icon: const Icon(Icons.search),
-                  label: const Text('Analyze Plant'),
+                  label: Text(
+                    _isAnalyzing ? 'Analyzing...' : 'Analyze Plant',
+                  ),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Disease analysis will be enabled in a later phase.',
+                  _isAnalyzing
+                      ? 'Running the crop disease model...'
+                      : 'Runs the on-device disease model.',
                   textAlign: TextAlign.center,
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant,
