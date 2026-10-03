@@ -8,17 +8,6 @@ class HomeScreen extends StatelessWidget {
 
   final ValueChanged<int> onNavigate;
 
-  void _showComingSoon(BuildContext context, String feature) {
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(
-        SnackBar(
-          content: Text('$feature will be available in a later phase.'),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -28,7 +17,9 @@ class HomeScreen extends StatelessWidget {
       child: ListView(
         padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
         children: [
+          // ------------------------------------------------------------
           // Brand header
+          // ------------------------------------------------------------
           Row(
             children: [
               Container(
@@ -65,7 +56,9 @@ class HomeScreen extends StatelessWidget {
 
           const SizedBox(height: 26),
 
+          // ------------------------------------------------------------
           // Main call to action
+          // ------------------------------------------------------------
           Container(
             padding: const EdgeInsets.all(22),
             decoration: BoxDecoration(
@@ -83,7 +76,9 @@ class HomeScreen extends StatelessWidget {
                   ),
                   child: const Icon(Icons.grass, color: Colors.white, size: 30),
                 ),
+
                 const SizedBox(height: 18),
+
                 Text(
                   'Keep your crops healthy',
                   style: theme.textTheme.headlineSmall?.copyWith(
@@ -91,12 +86,17 @@ class HomeScreen extends StatelessWidget {
                     fontWeight: FontWeight.w800,
                   ),
                 ),
+
                 const SizedBox(height: 8),
+
                 const Text(
-                  'Check a plant leaf for possible diseases and explore helpful crop-care information.',
+                  'Check a plant leaf for possible diseases and '
+                  'explore helpful crop-care information.',
                   style: TextStyle(color: Colors.white, height: 1.5),
                 ),
+
                 const SizedBox(height: 20),
+
                 SizedBox(
                   width: double.infinity,
                   child: FilledButton.icon(
@@ -117,9 +117,12 @@ class HomeScreen extends StatelessWidget {
           const SizedBox(height: 28),
 
           const SectionHeading(title: 'Start with a photo'),
+
           const SizedBox(height: 12),
 
-          // Camera and gallery actions
+          // ------------------------------------------------------------
+          // Camera and gallery
+          // ------------------------------------------------------------
           Row(
             children: [
               Expanded(
@@ -127,16 +130,18 @@ class HomeScreen extends StatelessWidget {
                   icon: Icons.camera_alt_outlined,
                   title: 'Take a photo',
                   description: 'Use your camera',
-                  onTap: () => _showComingSoon(context, 'Camera capture'),
+                  onTap: () => onNavigate(1),
                 ),
               ),
+
               const SizedBox(width: 12),
+
               Expanded(
                 child: _PhotoActionCard(
                   icon: Icons.photo_library_outlined,
                   title: 'Choose photo',
                   description: 'From your gallery',
-                  onTap: () => _showComingSoon(context, 'Gallery selection'),
+                  onTap: () => onNavigate(1),
                 ),
               ),
             ],
@@ -145,6 +150,7 @@ class HomeScreen extends StatelessWidget {
           const SizedBox(height: 28),
 
           const SectionHeading(title: 'Explore CropCare'),
+
           const SizedBox(height: 12),
 
           FeatureCard(
@@ -153,7 +159,9 @@ class HomeScreen extends StatelessWidget {
             description: 'Learn about crop diseases and plant symptoms.',
             onTap: () => onNavigate(2),
           ),
+
           const SizedBox(height: 12),
+
           FeatureCard(
             icon: Icons.history,
             title: 'Scan history',
@@ -163,7 +171,9 @@ class HomeScreen extends StatelessWidget {
 
           const SizedBox(height: 24),
 
-          // Photo-taking tip
+          // ------------------------------------------------------------
+          // Photo tip
+          // ------------------------------------------------------------
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
@@ -178,7 +188,9 @@ class HomeScreen extends StatelessWidget {
                   color: colors.onSecondaryContainer,
                   size: 24,
                 ),
+
                 const SizedBox(width: 12),
+
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -190,9 +202,13 @@ class HomeScreen extends StatelessWidget {
                           color: colors.onSecondaryContainer,
                         ),
                       ),
+
                       const SizedBox(height: 4),
+
                       Text(
-                        'Use a clear, well-lit photo of the leaf. Keep the affected area in focus and avoid strong shadows.',
+                        'Use a clear, well-lit photo of the leaf. '
+                        'Keep the affected area in focus and avoid '
+                        'strong shadows.',
                         style: theme.textTheme.bodyMedium?.copyWith(
                           color: colors.onSecondaryContainer,
                           height: 1.45,
@@ -208,7 +224,9 @@ class HomeScreen extends StatelessWidget {
           const SizedBox(height: 18),
 
           Text(
-            'Disease predictions are informational and may be uncertain. Consult a qualified agricultural expert when needed.',
+            'Disease predictions are informational and may be '
+            'uncertain. Consult a qualified agricultural expert '
+            'when needed.',
             textAlign: TextAlign.center,
             style: theme.textTheme.bodySmall?.copyWith(
               color: colors.onSurfaceVariant,
@@ -249,14 +267,18 @@ class _PhotoActionCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Icon(icon, color: colors.primary, size: 28),
+
               const SizedBox(height: 14),
+
               Text(
                 title,
                 style: theme.textTheme.titleSmall?.copyWith(
                   fontWeight: FontWeight.w700,
                 ),
               ),
+
               const SizedBox(height: 4),
+
               Text(
                 description,
                 style: theme.textTheme.bodySmall?.copyWith(

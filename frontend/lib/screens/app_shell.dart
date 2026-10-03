@@ -22,9 +22,18 @@ class _AppShellState extends State<AppShell> {
     const HistoryScreen(),
   ];
 
-  final List<String> _titles = ['Home', 'Detect', 'Disease Library', 'History'];
+  static const List<String> _titles = [
+    'Home',
+    'Detect',
+    'Disease Library',
+    'History',
+  ];
 
   void _navigateTo(int index) {
+    if (index < 0 || index >= _screens.length) {
+      return;
+    }
+
     setState(() {
       _selectedIndex = index;
     });

@@ -4,10 +4,11 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../screens/disease_result_screen.dart';
 import '../services/crop_disease_inference_service.dart';
 import '../services/disease_information_service.dart';
 import '../services/image_preprocessing_service.dart';
+import '../services/scan_history_service.dart';
+import 'disease_result_screen.dart';
 
 class DetectScreen extends StatefulWidget {
   const DetectScreen({super.key});
@@ -50,9 +51,11 @@ class _DetectScreenState extends State<DetectScreen> {
     } catch (error) {
       if (!mounted) return;
 
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Could not select image: $error')));
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(content: Text('Could not select image: $error')),
+        );
     } finally {
       if (mounted) {
         setState(() {
@@ -101,9 +104,7 @@ class _DetectScreenState extends State<DetectScreen> {
       final prediction = await _inferenceService.predict(input);
 
       debugPrint('OUTPUT: ${prediction.probabilities.length}');
-
       debugPrint('CLASS INDEX: ${prediction.classIndex}');
-
       debugPrint(
         'CONFIDENCE: '
         '${prediction.confidence.toStringAsFixed(6)}',
@@ -129,11 +130,32 @@ class _DetectScreenState extends State<DetectScreen> {
       );
 
       debugPrint('DISEASE: ${disease.diseaseName}');
-
       debugPrint('CROP: ${disease.crop}');
 
       // ------------------------------------------------------------
-      // 5. Navigate to the Phase 5 result screen.
+      // 5. Save the completed scan to local history.
+      //
+      // History failure should not prevent the user from seeing the
+      // prediction result.
+      // ------------------------------------------------------------
+      try {
+        await ScanHistoryService.addScan(
+          sourceImage: File(selectedImage.path),
+          crop: disease.crop,
+          diseaseName: disease.diseaseName,
+          confidence: prediction.confidence,
+          isHealthy: disease.isHealthy,
+        );
+
+        debugPrint('HISTORY: SAVED');
+      } catch (historyError, historyStackTrace) {
+        debugPrint('HISTORY SAVE FAILED');
+        debugPrint('ERROR: $historyError');
+        debugPrint('STACK TRACE: $historyStackTrace');
+      }
+
+      // ------------------------------------------------------------
+      // 6. Navigate to the result screen.
       // ------------------------------------------------------------
       if (!mounted) return;
 
@@ -155,12 +177,14 @@ class _DetectScreenState extends State<DetectScreen> {
 
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Disease analysis failed: $error'),
-          duration: const Duration(seconds: 5),
-        ),
-      );
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+            content: Text('Disease analysis failed: $error'),
+            duration: const Duration(seconds: 5),
+          ),
+        );
     } finally {
       if (mounted) {
         setState(() {
@@ -216,7 +240,7 @@ class _DetectScreenState extends State<DetectScreen> {
               const SizedBox(height: 24),
 
               // ------------------------------------------------------
-              // Image preview area
+              // Image preview
               // ------------------------------------------------------
               Container(
                 height: 300,
@@ -236,16 +260,12 @@ class _DetectScreenState extends State<DetectScreen> {
                             size: 64,
                             color: theme.colorScheme.primary,
                           ),
-
                           const SizedBox(height: 16),
-
                           Text(
                             'No image selected',
                             style: theme.textTheme.titleMedium,
                           ),
-
                           const SizedBox(height: 8),
-
                           Text(
                             'Your plant photo will appear here',
                             style: theme.textTheme.bodySmall,
@@ -267,7 +287,7 @@ class _DetectScreenState extends State<DetectScreen> {
               const SizedBox(height: 20),
 
               // ------------------------------------------------------
-              // Camera button
+              // Camera
               // ------------------------------------------------------
               FilledButton.icon(
                 onPressed: (_isPickingImage || _isAnalyzing)
@@ -280,7 +300,7 @@ class _DetectScreenState extends State<DetectScreen> {
               const SizedBox(height: 12),
 
               // ------------------------------------------------------
-              // Gallery button
+              // Gallery
               // ------------------------------------------------------
               OutlinedButton.icon(
                 onPressed: (_isPickingImage || _isAnalyzing)
@@ -295,7 +315,6 @@ class _DetectScreenState extends State<DetectScreen> {
               // ------------------------------------------------------
               if (_isPickingImage || _isAnalyzing) ...[
                 const SizedBox(height: 20),
-
                 const Center(child: CircularProgressIndicator()),
               ],
 
@@ -315,9 +334,6 @@ class _DetectScreenState extends State<DetectScreen> {
 
                 const SizedBox(height: 12),
 
-                // ----------------------------------------------------
-                // Analyze button
-                // ----------------------------------------------------
                 FilledButton.icon(
                   onPressed: (_isPickingImage || _isAnalyzing)
                       ? null

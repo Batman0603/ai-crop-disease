@@ -630,6 +630,22 @@ class DiseaseInformationService {
     ),
   };
 
+  static List<DiseaseInformation> get all {
+    final items = _diseases.values.toList();
+
+    items.sort((a, b) {
+      final cropCompare = a.crop.compareTo(b.crop);
+
+      if (cropCompare != 0) {
+        return cropCompare;
+      }
+
+      return a.diseaseName.compareTo(b.diseaseName);
+    });
+
+    return List.unmodifiable(items);
+  }
+
   static DiseaseInformation getByClassIndex(int classIndex) {
     final disease = _diseases[classIndex];
 
