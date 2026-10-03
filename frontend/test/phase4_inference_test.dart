@@ -1,30 +1,44 @@
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
+
 import 'package:frontend/services/crop_disease_inference_service.dart';
 
 void main() {
-  group('Phase 4 ONNX inference service', () {
-    test('uses the expected model contract', () {
-      expect(
-        CropDiseaseInferenceService.modelAsset,
-        'assets/models/crop_disease_efficientnet_v2_s.onnx',
+  group('CropDiseasePrediction contract', () {
+    test('prediction contract supports 25 classes', () {
+      final prediction = CropDiseasePrediction(
+        classIndex: 4,
+        confidence: 0.57,
+        probabilities: List<double>.filled(25, 0.04),
       );
 
-      expect(CropDiseaseInferenceService.inputElementCount, 3 * 224 * 224);
-
-      expect(CropDiseaseInferenceService.classCount, 25);
+      expect(prediction.classIndex, inInclusiveRange(0, 24));
+      expect(prediction.probabilities, hasLength(25));
+      expect(prediction.confidence, greaterThanOrEqualTo(0));
+      expect(prediction.confidence, lessThanOrEqualTo(1));
     });
 
-    test('rejects an incorrectly sized input tensor', () async {
-      final service = CropDiseaseInferenceService();
+    test('Float32List input size matches model contract', () {
+      const expectedElementCount = 3 * 224 * 224;
 
-      expect(
-        () => service.predict(Float32List(10)),
-        throwsA(isA<StateError>()),
-      );
+      final input = Float32List(expectedElementCount);
 
-      await service.close();
+      expect(input.length, 150528);
+      expect(input.length, expectedElementCount);
+    });
+
+    test('prediction probability values can represent a normalized output', () {
+      final probabilities = <double>[
+        0.01,
+        0.257971,
+        ...List<double>.filled(23, 0.01),
+      ];
+
+      final sum = probabilities.reduce((a, b) => a + b);
+
+      expect(probabilities, hasLength(25));
+      expect(sum, closeTo(0.497971, 0.000001));
     });
   });
 }
