@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'chatbot_screen.dart';
 import 'detect_screen.dart';
 import 'disease_library_screen.dart';
 import 'history_screen.dart';
@@ -20,13 +21,15 @@ class _AppShellState extends State<AppShell> {
     const DetectScreen(),
     const DiseaseLibraryScreen(),
     const HistoryScreen(),
+    const ChatbotScreen(),
   ];
 
-  static const List<String> _titles = [
+  final List<String> _titles = [
     'Home',
     'Detect',
     'Disease Library',
     'History',
+    'CropCare Assistant',
   ];
 
   void _navigateTo(int index) {
@@ -67,6 +70,11 @@ class _AppShellState extends State<AppShell> {
             icon: Icon(Icons.history_outlined),
             selectedIcon: Icon(Icons.history),
             label: 'History',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.smart_toy_outlined),
+            selectedIcon: Icon(Icons.smart_toy),
+            label: 'Chat',
           ),
         ],
       ),
